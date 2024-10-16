@@ -23,6 +23,15 @@ class Blog(models.Model):
     def __str__(self):
         return self.title
     
+
+class Comment(models.Model):
+    blog = models.ForeignKey(Blog,related_name='blogs',on_delete=models.CASCADE)
+    text = models.CharField(max_length=200)
+    pub_date = models.DateTimeField(auto_now_add=True)
+    
+    def __str__(self):
+        return f'Comment on {self.blog.title}: {self.text[:20]}'
+    
     
     
     
