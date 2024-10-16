@@ -2,16 +2,29 @@
 from rest_framework.response import Response
 from rest_framework import status,generics
 from .models import *
-from .serializers import BlogSerializer,CommentSerializer
+from .serializers import BlogSerializer,CommentSerializer,UserSerializer
 from rest_framework.views import APIView
 from django.http import Http404
 from drf_yasg.utils import swagger_auto_schema
 from drf_yasg import openapi
+from django.contrib.auth.models import User
+from .permissions import *
 
+
+# ---------------------------USERS VIEWS---------------------#
+
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
 
 # --------------------------- BLOG VIEW -----------------------#
 
 class BlogList(APIView):
+    permission_classes = [IsOwnerOrReadOnly]
     
     @swagger_auto_schema(
         operation_description="Retrieve all blog posts",
@@ -43,6 +56,7 @@ class BlogList(APIView):
     
 
 class BlogDetail(APIView):
+    permission_classes = [IsOwnerOrReadOnly]
     
     # create instance of a single blog
     def get_object(self,pk):
@@ -102,6 +116,7 @@ class BlogDetail(APIView):
 
 # --------------------------- COMMENT VIEW -----------------------#
 class CommentList(APIView):
+    permission_classes = [IsOwnerOrReadOnly]
     
     
     # get all comments
@@ -136,6 +151,8 @@ class CommentList(APIView):
 
 
 class CommentDetail(APIView):
+    permission_classes = [IsOwnerOrReadOnly]
+    
     
     def get_object(self,pk):
         try:

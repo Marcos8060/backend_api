@@ -14,6 +14,7 @@ CATEGORY_CHOICES = [
 
 # Create your models here.
 class Blog(models.Model):
+    author = models.ForeignKey('auth.user',related_name='blogs',on_delete=models.CASCADE)
     title = models.CharField(max_length=100,blank=False)
     description = models.TextField()
     category = models.CharField(choices=CATEGORY_CHOICES,default='WEB_DEV')
@@ -25,7 +26,8 @@ class Blog(models.Model):
     
 
 class Comment(models.Model):
-    blog = models.ForeignKey(Blog,related_name='blogs',on_delete=models.CASCADE)
+    author = models.ForeignKey('auth.user',related_name='comments',on_delete=models.CASCADE)
+    blog = models.ForeignKey(Blog,related_name='comments',on_delete=models.CASCADE)
     text = models.CharField(max_length=200)
     pub_date = models.DateTimeField(auto_now_add=True)
     
